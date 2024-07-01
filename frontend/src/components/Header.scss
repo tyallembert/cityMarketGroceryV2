@@ -1,0 +1,25 @@
+.headerContainer {
+    display: flex;
+    align-items: flex-end;
+    padding: 1em;
+    width: 100%;
+    height: 15vh;
+    color: rgb(var(--green-light));
+    .timeContainer {
+        border-right: solid 1px rgb(var(--green-light));
+        padding-right: 1em;
+        margin-right: 1em;
+        width: 18%;
+        .time {
+            font-size: 2.5em;
+            font-weight: 900;
+        }
+        .date {
+            font-size: 1.2em;
+        }
+    }
+    .title {
+        font-size: 3em;
+        font-weight: 600;
+    }
+}

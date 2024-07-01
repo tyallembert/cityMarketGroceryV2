@@ -1,0 +1,31 @@
+.navigationContainer {
+    background-color: white;
+    width: 18%;
+    height: 83vh;
+    border-top-right-radius: 2em;
+    border-bottom-right-radius: 2em;
+    box-shadow: 2px 2px 2px rgba(black, 0.5);
+    padding: 2em 1em;
+    ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        li {
+            list-style: none;
+            border-radius: 10em;
+            width: 100%;
+            background-color: rgb(var(--green-dark));
+            border: solid 5px rgb(var(--green-light));
+            width: 100%;
+            font-weight: 700;
+            .navLink {
+                display: block;
+                width: 100%;
+                padding: 1em;
+                text-align: center;
+                color: rgb(var(--green-light));
+                text-decoration: none;
+            }
+        }
+    }
+}
