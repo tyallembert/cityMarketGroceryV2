@@ -72,4 +72,90 @@ class DryGoodsLiveController extends AbstractController
 
         return new JsonResponse($task);
     }
+
+    #[Route('/dryGoodsLive/finish/{id}', name: 'finish_dry_goods_live')]
+    public function finish(Int $id, EntityManagerInterface $entityManager, ValidatorInterface $validator): JsonResponse{
+
+        $task = $entityManager->getRepository(DryGoodsLive::class)->find($id);
+
+        $now = new \DateTime('now');
+
+        $task->setEndTime($now);
+        $task->setStatus("FINISHED");
+
+        $errors = $validator->validate($task);
+        if (count($errors) > 0) {
+            return new Response((string) $errors, 400);
+        }
+
+        // actually executes the queries (i.e. the INSERT query)
+        $entityManager->flush();
+
+        return new JsonResponse($task);
+    }
+
+    #[Route('/dryGoodsLive/abandon/{id}', name: 'abandon_dry_goods_live')]
+    public function abandon(Int $id, EntityManagerInterface $entityManager, ValidatorInterface $validator): JsonResponse{
+
+        $task = $entityManager->getRepository(DryGoodsLive::class)->find($id);
+
+        $now = new \DateTime('now');
+
+        $task->setEndTime($now);
+        $task->setStatus("ABANDONED");
+
+        $errors = $validator->validate($task);
+        if (count($errors) > 0) {
+            return new Response((string) $errors, 400);
+        }
+
+        // actually executes the queries (i.e. the INSERT query)
+        $entityManager->flush();
+
+        return new JsonResponse($task);
+    }
+
+    #[Route('/dryGoodsLive/continue/{id}', name: 'continue_dry_goods_live')]
+    public function continue(Request $request, Int $id, EntityManagerInterface $entityManager, ValidatorInterface $validator): JsonResponse{
+        $data = json_decode($request->getContent(), true);
+
+        if (!$data) {
+            return new Response('Invalid JSON', 400);
+        }
+
+        $abandonedTask = $entityManager->getRepository(DryGoodsLive::class)->find($id);
+
+        $now = new \DateTime('now');
+
+        $task = new DryGoodsLive();
+        $task->setAisle($abandonedTask->getAisle() ?? '');
+        $task->setBoxCount($abandonedTask->getBoxCount() ?? '');
+        $task->setToteCount($abandonedTask->getToteCount() ?? '');
+        $task->setStartTime($now);
+        $task->setType('CONTINUED');
+        $task->setStatus("IN PROGRESS");
+
+        $errors = $validator->validate($task);
+        if (count($errors) > 0) {
+            return new Response((string) $errors, 400);
+        }
+        // tell Doctrine you want to (eventually) save the Product (no queries yet)
+        $entityManager->persist($task);
+        // actually executes the queries (i.e. the INSERT query)
+        $entityManager->flush();
+
+        return new JsonResponse($task);
+    }
+
+    #[Route('/dryGoodsLive/remove/{id}', name: 'remove_dry_goods_live')]
+    public function remove(Int $id, EntityManagerInterface $entityManager): JsonResponse{
+
+        $task = $entityManager->getRepository(DryGoodsLive::class)->find($id);
+
+        $entityManager->remove($task);
+        // actually executes the queries (i.e. the INSERT query)
+        $entityManager->flush();
+
+        return new JsonResponse($task);
+    }
 }

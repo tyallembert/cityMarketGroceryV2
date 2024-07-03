@@ -26,18 +26,23 @@
         display: flex;
         flex-direction: column;
         gap: 0.5em;
-        border: solid 1px rgba(var(--color-2), 0.1);
+        // border: solid 1px rgba(var(--color-2), 0.1);
         background-color: rgba(var(--color-2), 0.1);
         padding: 0.5em;
         width: 100%;
-        // overflow: hidden;
-        border-radius: 0.6em;
+        border-radius: 1em;
+        box-shadow: 1px 1px 3px rgb(0,0,0,0.3);
+        .noTasks {
+            width: 100%;
+            text-align: center;
+            opacity: 0.3;
+            margin: 2em;
+        }
         .row, .titleRow {
             display: flex;
             max-width: 100%;
             background-color: rgba(var(--color-2), 0.1);
-            border-radius: 0.5em;
-            // padding: 1em;
+            border-radius: 0.8em;
             border: solid 1px rgba(var(--color-2), 0.2);
             &:nth-child(even) {
                 background-color: rgba(var(--color-2), 0.2);
@@ -51,7 +56,6 @@
                 width: calc(90%/6);
                 margin: 0;
                 padding: 1em;
-                // border-right: solid 1px rgba(var(--color-2), 0.2);
                 &.status {
                     display: flex;
                     flex-direction: column;
@@ -71,14 +75,48 @@
                         background-color: rgb(169, 169, 169);
                     }
                     &.finished {
-                        background-color: rgb(47, 163, 43);
+                        background-color: rgb(var(--green-dark));
                     }
                     &.abandoned {
-                        background-color: rgb(163, 43, 43);
+                        background-color: rgb(var(--red-dark));
                     }
                 }
                 &.endTime {
                     border-right: none;
+                }
+                .button {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 4em;
+                    width: 4em;
+                    border-radius: 10em;
+                    margin: 0 0.5em;
+                    border: none;
+                    transition: all 150ms ease-in-out;
+                    p {
+                        font-size: 0.7em;
+                    }
+                    &:hover, &:focus {
+                        cursor: pointer;
+                        scale: 0.9;
+                    }
+                    &.finishButton {
+                        background-color: rgb(var(--green-dark));
+                        outline: solid 4px rgb(var(--green-light));
+                        color: rgb(var(--green-light));
+                    }
+                    &.abandonButton {
+                        background-color: rgb(var(--red-dark));
+                        outline: solid 4px rgb(var(--red-light));
+                        color: rgb(var(--red-light));
+                    }
+                    &.continueButton {
+                        background-color: rgb(var(--orange-dark));
+                        outline: solid 4px rgb(var(--orange-light));
+                        color: rgb(var(--orange-light));
+                    }
                 }
             }
         }
@@ -90,41 +128,22 @@
         }
     }
     .newTaskContainer {
+        .title {
+            margin-left: 0.5em;
+            opacity: 0.5;
+        }
         .newClassButton {
-            padding: 1em;
-            border-radius: 0.7em;
-            border: solid 1px rgba(var(--color-2), 0.1);
-            background-color: rgb(47, 163, 43);
+            padding: 1em 2em;
+            border-radius: 10em;
+            color: rgb(var(--green-light));
+            border: solid 5px rgb(var(--green-light));
+            background-color: rgb(var(--green-dark));
             font-size: 1em;
-            font-weight: 500;
-            box-shadow: inset 0px 0px 3px rgba(255,255,255);
+            font-weight: 700;
             transition: all 200ms ease-in-out;
             &:hover {
                 cursor: pointer;
-            }
-        }
-        .newTaskForm {
-            display: flex;
-            gap: 1em;
-            background-color: rgba(var(--color-2), 0.1);
-            border-radius: 1em;
-            padding: 1em;
-            label {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: flex-start;
-                width: calc(100%/5);
-                p {
-                    padding: 0;
-                    margin: 0;
-                }
-                select {
-                    min-width: 5em;
-                }
-                input[type='range'] {
-                    width: 90%;
-                }
+                scale: 0.95;
             }
         }
     }

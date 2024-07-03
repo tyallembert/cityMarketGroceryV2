@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "./EmployeePicker.scss";
 
-export const EmployeePicker = ({ handleChange, }) => {
+export const EmployeePicker = ({ handleChange }) => {
     const [employees, setEmployees] = useState([]);
     useEffect(() => {
         const fetchData = async () => {

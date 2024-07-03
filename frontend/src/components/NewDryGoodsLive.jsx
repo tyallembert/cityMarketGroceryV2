@@ -1,26 +1,26 @@
 import React, { useState } from 'react'
 import { EmployeePicker } from './EmployeePicker'
 import { useLiveFreight } from '../context/LiveFreightContext';
+import { IconCheck, IconX } from '@tabler/icons-react';
+import "./NewDryGoodsLive.scss";
 
 export const NewDryGoodsLive = ({ setShowingNewTask }) => {
     const {newTaskOptions, saveNewTask} = useLiveFreight();
     const [newTask, setNewTask] = useState(
         {
             employeeId: null,
-            aisle: "",
+            aisle: null,
             boxCount: "0",
             toteCount: "0",
-            type: "NEW",
-            abandonedId: null,
-            startTime: "",
-            endTime: "",
-            status: "IN PROGRESS"
         }
     );
     const handleChange = (e) => {
         e.preventDefault();
         const name = e.target.name;
-        const value = e.target.value;
+        let value = e.target.value;
+        if(value === "Choose") {
+            value = null;
+        }
         setNewTask({...newTask, [name]: value});
     }
     const handleSubmit = async(e) => {
@@ -62,8 +62,10 @@ export const NewDryGoodsLive = ({ setShowingNewTask }) => {
             value={newTask.toteCount}
             onChange={handleChange} />
         </label>
-        <button onClick={handleSubmit}>Submit</button>
-        <button onClick={() => setShowingNewTask(false)}>Close</button>
+        <button onClick={handleSubmit} 
+        className='formButton submitButton'
+        disabled={(!newTask.employeeId || !newTask.aisle)? true: false}><IconCheck /></button>
+        <button onClick={() => setShowingNewTask(false)} className='formButton cancelButton'><IconX /></button>
     </form>
   )
 }

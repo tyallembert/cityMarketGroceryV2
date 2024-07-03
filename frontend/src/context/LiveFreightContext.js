@@ -16,7 +16,7 @@ function LiveFreightProvider({ children }) {
         Then it will populate the task object with the new task.
     */
     const saveNewTask = async(newTask) => {
-        setTasks([...tasks, newTask]);
+        // setTasks([...tasks, newTask]);
         const data = await fetch("http://localhost:8000/dryGoodsLive/new", {
             method: 'POST',
             headers: {
@@ -37,31 +37,41 @@ function LiveFreightProvider({ children }) {
         This function will send a POST request to the server to update the task element.
         Then it will populate the task object with the new task.
     */
-    const finishTask = (taskId) => {
-        const date = new Date();
-        const updatedTasks = tasks.map((task) => {
-            if(task.id === taskId) {
-                task.endTime = date.toISOString();
-                task.status = "FINISHED"
+    const finishTask = async(taskId) => {
+        const data = await fetch(`http://localhost:8000/dryGoodsLive/finish/${taskId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
             }
-            return task;
         })
-        setTasks(updatedTasks);
+        if(data.ok) {
+            console.log("SUCCESS");
+            fetchTasks();
+            return true;
+        } else {
+            console.log("ERROR")
+            return false;
+        }
     }
     /*
         This function will send a POST request to the server to update the task element.
         Then it will populate the task object with the new task.
     */
-    const pauseTask = (taskId) => {
-        const date = new Date();
-        const updatedTasks = tasks.map((task) => {
-            if(task.id === taskId) {
-                task.endTime = date.toISOString();
-                task.status = "ABANDONED"
+    const abandonTask = async(taskId) => {
+        const data = await fetch(`http://localhost:8000/dryGoodsLive/abandon/${taskId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
             }
-            return task;
         })
-        setTasks(updatedTasks);
+        if(data.ok) {
+            console.log("SUCCESS");
+            fetchTasks();
+            return true;
+        } else {
+            console.log("ERROR")
+            return false;
+        }
     }
     /*
         This function will cretae a new task but will populate the type with CONTINUED and the abandonedId with the current tasks id.
@@ -119,7 +129,7 @@ function LiveFreightProvider({ children }) {
         setTasks(data);
     }
     return (
-        <LiveFreightContext.Provider value={{tasks, newTaskOptions, saveNewTask, finishTask, pauseTask, continueTask}}>
+        <LiveFreightContext.Provider value={{tasks, newTaskOptions, saveNewTask, finishTask, abandonTask, continueTask}}>
             {children}
         </LiveFreightContext.Provider>
     )

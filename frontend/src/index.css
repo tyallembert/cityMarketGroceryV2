@@ -8,10 +8,16 @@
   margin: 0;
 }
 :root {
+  background-color: rgb(240, 185, 123);
+  background-color: rgb(213, 134, 44);
   --color-1: 255,255,255;
   --color-2: 33, 33, 33;
   --green-light: 195, 223, 196;
-  --green-dark: 113, 169, 115
+  --green-dark: 113, 169, 115;
+  --red-light: 222, 149, 149;
+  --red-dark: 203, 70, 70;
+  --orange-light: 240, 185, 123;
+  --orange-dark: 213, 134, 44;
 
 }
 @media (prefers-color-scheme: light) {
@@ -40,7 +46,36 @@ main {
 }
 
 h1, h2, h3 {
-  /* font-family: "Oswald", sans-serif; */
   font-weight: 800;
+}
+select {
+  border-radius: 10em;
+  padding: 0.5em;
+  background-color: rgb(var(--green-dark));
+  border: solid 4px rgb(var(--green-light));
+  color: rgb(var(--green-light));
+  font-weight: 600;
+  outline: none;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 15px; 
+  border-radius: 10em;
+  background: rgb(var(--green-light));
+  outline: solid 1px rgb(var(--green-dark));
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 10em;
+  background: rgb(var(--green-dark));
+  cursor: pointer;
+  transition: all 200ms ease-in-out;
+}
+input[type="range"]::-webkit-slider-thumb:active {
+  scale: 1.3;
 }
 
