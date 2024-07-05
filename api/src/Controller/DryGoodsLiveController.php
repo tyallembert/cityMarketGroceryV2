@@ -20,10 +20,10 @@ class DryGoodsLiveController extends AbstractController
     #[Route('/dryGoodsLive/today', name: 'dry_goods_live_today')]
     public function today(DryGoodsLiveRepository $repository, SerializerInterface $serializer): JsonResponse{
         // Create a DateTime object for the start of today (00:00:00)
-        $startOfDay = new \DateTime('today 04:00:00');
+        $startOfDay = new \DateTime('today 01:00:00');
 
         // Create a DateTime object for the end of today (23:59:59)
-        $endOfDay = new \DateTime('today 22:00:00');
+        $endOfDay = new \DateTime('today 23:00:00');
 
         // Use the repository to find tasks with startTime within today's range
         $tasks = $repository->createQueryBuilder('t')
@@ -31,7 +31,17 @@ class DryGoodsLiveController extends AbstractController
             ->andWhere('t.startTime <= :endOfDay')
             ->setParameter('startOfDay', $startOfDay)
             ->setParameter('endOfDay', $endOfDay)
-            ->orderBy('t.startTime', 'ASC')
+            ->orderBy('
+            CASE
+                WHEN t.status = :statusAbandoned THEN 1
+                WHEN t.status = :statusInProgress THEN 2
+                WHEN t.status = :statusFinished THEN 3
+                ELSE 4
+            END', 'ASC')
+            ->addOrderBy('t.startTime', 'ASC')
+            ->setParameter('statusAbandoned', 'ABANDONED')
+            ->setParameter('statusInProgress', 'IN PROGRESS')
+            ->setParameter('statusFinished', 'FINISHED')
             ->getQuery()
             ->getResult();
         $jsonContent = $serializer->serialize($tasks, 'json', ['groups' => ['dryGoodsLive', 'dryGoodsLive:employee']]);
@@ -124,10 +134,15 @@ class DryGoodsLiveController extends AbstractController
         }
 
         $abandonedTask = $entityManager->getRepository(DryGoodsLive::class)->find($id);
+        $abandonedTask->setStatus("PICKED UP");
+        $newEmployee = $entityManager->getRepository(Employee::class)->find($data['employeeId']);
+
 
         $now = new \DateTime('now');
 
         $task = new DryGoodsLive();
+        $task->setAbandonedBoat($abandonedTask);
+        $task->setEmployeeId($newEmployee);
         $task->setAisle($abandonedTask->getAisle() ?? '');
         $task->setBoxCount($abandonedTask->getBoxCount() ?? '');
         $task->setToteCount($abandonedTask->getToteCount() ?? '');

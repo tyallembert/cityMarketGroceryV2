@@ -19,7 +19,30 @@
             flex-direction: column;
             padding: 1em;
             background-color: rgb(var(--color-1));
-            border-radius: 0.5em;
+            border-radius: 1em;
+            width: 15em;
+            .text {
+                margin-bottom: 1em;
+                span {
+                    font-weight: 700;
+                }
+            }
+            label {
+                select {
+                    width: 100%;
+                }
+                p {
+                    margin-left: 0.5em;
+                }
+            }
+            .button {
+                margin-top: 0.5em;
+            }
+            .cancelButton {
+                background-color: rgb(var(--red-dark));
+                color: rgb(var(--red-light));
+                border: solid 3px rgb(var(--red-light));
+            }
         }
     }
     .tasksContainer {

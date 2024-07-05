@@ -78,21 +78,22 @@ function LiveFreightProvider({ children }) {
         Then it will update the old task to have a type of ABANDONED so it is not shown in the current tasks.
         Then it will populate the task object with the new task.
     */
-        const continueTask = (task) => {
-            const date = new Date();
-            task.type = "CONTINUED";
-            task.startTime = date.toISOString();
-            task.firstName = "example";
-            setTasks((prevTasks) => {
-                let newTasks = prevTasks.map((oneTask) => {
-                    if(oneTask.id === task.abandonedId) {
-                        oneTask.type = "ABANADONED";
-                    }
-                    return oneTask;
-                })
-                newTasks = [...newTasks, task];
-                return newTasks;
-            });
+        const continueTask = async(abandonedTaskId, employeeId) => {
+            const data = await fetch(`http://localhost:8000/dryGoodsLive/continue/${abandonedTaskId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({employeeId: employeeId})
+            })
+            if(data.ok) {
+                console.log("SUCCESS");
+                fetchTasks();
+                return true;
+            } else {
+                console.log("ERROR")
+                return false;
+            }
         }
     /*
         This function will retrieve the options associated with a new live freight aisle.

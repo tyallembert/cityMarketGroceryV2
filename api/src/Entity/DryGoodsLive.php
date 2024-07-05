@@ -49,6 +49,10 @@ class DryGoodsLive
     #[Groups("dryGoodsLive")]
     private ?Employee $employeeId = null;
 
+    #[ORM\OneToOne(targetEntity: self::class, inversedBy: 'abandonedBoat', cascade: ['persist', 'remove'])]
+    // #[Groups("dryGoodsLive")]
+    private ?self $abandonedBoat = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -146,6 +150,18 @@ class DryGoodsLive
     public function setEmployeeId(?Employee $employeeId): static
     {
         $this->employeeId = $employeeId;
+
+        return $this;
+    }
+
+    public function getAbandonedBoat(): ?self
+    {
+        return $this->abandonedBoat;
+    }
+
+    public function setAbandonedBoat(?self $abandonedBoat): static
+    {
+        $this->abandonedBoat = $abandonedBoat;
 
         return $this;
     }

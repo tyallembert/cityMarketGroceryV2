@@ -5,6 +5,7 @@ import { IconSquareRoundedCheck, IconRecycle, IconDoorExit, IconCheck, IconArrow
 import { NewDryGoodsLive } from '../components/NewDryGoodsLive';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
+import { EmployeePicker } from '../components/EmployeePicker';
 
 const LiveFreightDryGoods = () => {
   return (
@@ -17,10 +18,20 @@ const LiveFreightDryGoods = () => {
 export default LiveFreightDryGoods;
 
 const LiveFreightDryGoodsComponent = () => {
-    const {tasks, finishTask, abandonTask} = useLiveFreight();
+    const {tasks, finishTask, abandonTask, continueTask} = useLiveFreight();
     const [showingNewTask, setShowingNewTask] = useState(false);
     const [showingContinuePopup, setShowingContinuePopup] = useState(false);
+    const [continueTaskInfo, setContinueTaskInfo] = useState({
+        taskId: null,
+        aisle: null,
+        formerEmployee: null,
+        employeeId: null
+    });
 
+    const continueEmployeeChange = (e) => {
+        const value = e.target.value;
+        setContinueTaskInfo({...continueTaskInfo, employeeId: value});
+    }
     const formatTime = (timestamp) => {
         const date = new Date(timestamp);
         let hours = date.getHours().toString().padStart(2, '0');
@@ -55,21 +66,26 @@ const LiveFreightDryGoodsComponent = () => {
                         <p className='text'>Abandoned</p>
                     </div>
                 )
+            case "PICKED UP":
+                return (
+                    <div className='item status pickedUp'>
+                        <IconSquareRoundedCheck className='icon' />
+                        <p className='text'>Picked Up</p>
+                    </div>
+                )
             default:
                 return <p className='item status'></p>
         }
     }
-    const continueAbandonedTask = (taskId, aisle, boxCount, toteCount) => {
-        setShowingContinuePopup(true);
-        // setNewTask((prevTask) => {
-        //     const task = {...prevTask};
-        //     task.abandonedId = taskId;
-        //     task.aisle = aisle;
-        //     task.boxCount = boxCount;
-        //     task.toteCount = toteCount;
-        //     task.status = "IN PROGRESS"
-        //     return task;
-        // })
+    const closeContinuePopup = () => {
+        setShowingContinuePopup(false);
+        setContinueTaskInfo({taskId: null, empoloyeeId: null});
+    }
+    const confirmContinue = async(taskId, employeeId) => {
+        const complete = await continueTask(taskId, employeeId);
+        if(complete) {
+            setShowingContinuePopup(false);
+        }
     }
 
     return (
@@ -81,18 +97,13 @@ const LiveFreightDryGoodsComponent = () => {
                 showingContinuePopup ? (
                     <div className='abandonedPopup'>
                         <div className='abandonedContainer'>
-                            {/* <select name='userId' onChange={handleChange}>
-                                {
-                                    newTaskOptions.users.map((user, index) => (
-                                        <option key={index} value={user.id}>{user.firstName}</option>
-                                    ))
-                                }
-                            </select>
-                            <button onClick={() => {
-                                continueTask(newTask);
-                                setShowingContinuePopup(false);
-                                }}>Continue</button>
-                            <button onClick={handleClose}>Cancel</button> */}
+                            <h2>Confirm!</h2>
+                            <p className='text'>Continue aisle <span>{continueTaskInfo.aisle}</span> for <span>{continueTaskInfo.formerEmployee}</span></p>
+                            <EmployeePicker handleChange={continueEmployeeChange}/>
+                            <button className="button" 
+                            disabled={(!continueTaskInfo.taskId || !continueTaskInfo.employeeId || continueTaskInfo.employeeId === "Choose") ? true: false} 
+                            onClick={()=>confirmContinue(continueTaskInfo.taskId, continueTaskInfo.employeeId)}>Continue</button>
+                            <button className="button cancelButton" onClick={closeContinuePopup}>Cancel</button>
                         </div>
                     </div>
                 ): null
@@ -143,7 +154,10 @@ const LiveFreightDryGoodsComponent = () => {
                                     </div>
                                 ): task.status === "ABANDONED" ? (
                                     <div className='item endTime endTimeContainer'>
-                                        <button className="button continueButton" onClick={() => continueAbandonedTask(task.id, task.aisle, task.boxCount, task.toteCount)}>
+                                        <button className="button continueButton" onClick={()=>{
+                                            setShowingContinuePopup(true);
+                                            setContinueTaskInfo({...continueTaskInfo, taskId: task.id, aisle: task.aisle, formerEmployee: task.employeeId.firstName})
+                                            }}>
                                             <IconArrowForwardUp />
                                             <p>Continue</p>
                                         </button>
