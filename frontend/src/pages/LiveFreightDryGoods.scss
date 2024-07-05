@@ -1,5 +1,6 @@
 
 .dryGoodsLive {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 1em;
@@ -7,6 +8,7 @@
     background-color: rgb(var(--color-1));
     color: rgb(var(--color-2));
     height: 85vh;
+    overflow-y: scroll;
     .abandonedPopup {
         position: absolute;
         inset: 0;
@@ -144,6 +146,8 @@
             }
         }
         .titleRow {
+            position: sticky;
+            top: -1em;
             background-color: rgb(242, 227, 97);
             .item {
                 font-weight: 600;
