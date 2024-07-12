@@ -1,0 +1,200 @@
+.adminpage {
+    display: flex;
+    gap: 1em;
+    padding: 1em;
+    background-color: rgb(var(--color-1));
+    color: rgb(var(--color-2));
+    height: 85vh;
+    overflow-y: scroll;
+    .dayBreakdownContainer, .graphsContainer {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        gap: 1em;
+        border-radius: 1em;
+        height: 80vh;
+        padding: 1em;
+        background-color: rgb(var(--green-light));
+        .infoBox {
+            border-radius: 1em;
+            width: 28%;
+            min-height: 20vh;
+            padding: 1em;
+            background-color: rgb(var(--green-dark));
+        }
+    }
+    .dayBreakdownContainer {
+        width: 70%;
+        .totals {
+            display: flex;
+            flex-wrap: wrap;
+            width: 65%;
+            .boxesContainer, .totesContainer {
+                width: 50%;
+                .boxesTitle, .totesTitle {
+                    color: rgb(var(--green-light));
+                    font-size: 0.9em;
+                }
+                .boxesAmount, .totesAmount {
+                    color: rgb(var(--green-light));
+                    font-size: 2em;
+                }
+            }
+            .perAisleTable {
+                width: 100%;
+                border: solid 2px rgb(var(--green-light));
+                color: rgb(var(--green-light));
+                padding: 0.5em;
+                border-collapse: collapse;
+                border-radius: 0.5em;
+                margin-top: 1em;
+                tr {
+                    th, td {
+                        width: calc(100% / 8);
+                        text-align: center;
+                        border: solid 1px rgb(var(--green-light));
+                    }
+                }
+            }
+        }
+        .datePicker {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            .datePickerInput {
+                margin-top: 1em;
+                border-radius: 10em;
+                padding: 0.5em;
+                background-color: rgba(var(--color-1), 0.4);
+                border: solid 1px rgba(var(--color-2), 0.5);
+                font-family: "Inter", sans-serif;
+                font-weight: 500;
+                font-size: 1em;
+                transition: all 150ms ease-in-out;
+                &:hover {
+                    cursor: pointer;
+                    background-color: rgba(var(--color-1), 1);
+                }
+            }
+            h2 {
+                color: rgb(var(--green-light));
+            }
+        }
+        .tasksContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5em;
+            background-color: rgb(var(--green-light));
+            padding: 0.5em;
+            width: 100%;
+            border-radius: 1em;
+            box-shadow: 1px 1px 3px rgb(0,0,0,0.3);
+            .noTasks {
+                width: 100%;
+                text-align: center;
+                opacity: 0.3;
+                margin: 2em;
+            }
+            .row, .titleRow {
+                display: flex;
+                max-width: 100%;
+                background-color: rgba(var(--color-2), 0.1);
+                border-radius: 0.8em;
+                border: solid 1px rgba(var(--color-2), 0.2);
+                &:nth-child(even) {
+                    background-color: rgba(var(--color-2), 0.2);
+                }
+                .item {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    text-align: center;
+                    overflow-x: scroll;
+                    width: calc(90%/5);
+                    margin: 0;
+                    padding: 1em;
+                    &.status {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        width: 10%;
+                        border-radius: 0.5em;
+                        .icon {
+                            color: rgba(var(--color-1), 0.6);
+                        }
+                        .text {
+                            font-size: 0.6em;
+                            color: rgba(var(--color-1), 0.6);
+                        }
+                        &.inProgress {
+                            // background-color: rgb(218, 213, 58);
+                            background-color: rgb(169, 169, 169);
+                        }
+                        &.finished {
+                            background-color: rgb(var(--green-dark));
+                        }
+                        &.abandoned {
+                            background-color: rgb(var(--red-dark));
+                        }
+                    }
+                    &.endTime {
+                        border-right: none;
+                    }
+                    .button {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        height: 4em;
+                        width: 4em;
+                        border-radius: 10em;
+                        margin: 0 0.5em;
+                        border: none;
+                        transition: all 150ms ease-in-out;
+                        p {
+                            font-size: 0.7em;
+                        }
+                        &:hover, &:focus {
+                            cursor: pointer;
+                            scale: 0.9;
+                        }
+                        &.finishButton {
+                            background-color: rgb(var(--green-dark));
+                            outline: solid 4px rgb(var(--green-light));
+                            color: rgb(var(--green-light));
+                        }
+                        &.abandonButton {
+                            background-color: rgb(var(--red-dark));
+                            outline: solid 4px rgb(var(--red-light));
+                            color: rgb(var(--red-light));
+                        }
+                        &.continueButton {
+                            background-color: rgb(var(--orange-dark));
+                            outline: solid 4px rgb(var(--orange-light));
+                            color: rgb(var(--orange-light));
+                        }
+                    }
+                }
+            }
+            .titleRow {
+                position: sticky;
+                top: -1em;
+                background-color: rgb(242, 227, 97);
+                .item {
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+    .graphsContainer {
+        width: 30%;
+        .graph {
+            border-radius: 1em;
+            width: 100%;
+            height: 30vh;
+            background-color: rgba(var(--color-2), 0.2);
+        }
+    }
+}

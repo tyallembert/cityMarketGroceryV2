@@ -5,7 +5,7 @@ export const EmployeePicker = ({ handleChange }) => {
     const [employees, setEmployees] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch('http://localhost:8000/employees',
+            const response = await fetch(process.env.REACT_APP_API_URL + '/employees',
                 {
                     'Content-Type': 'application/json'
                 }

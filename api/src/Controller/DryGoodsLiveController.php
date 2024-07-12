@@ -173,4 +173,107 @@ class DryGoodsLiveController extends AbstractController
 
         return new JsonResponse($task);
     }
+
+    // ADMIN - the routes below are queried by the admin pages
+
+    // This function returns data for a certain day along with analytics
+    #[Route('/admin/dryGoodsLive', name: 'admin_dry_goods_live')]
+    public function adminDryGoodsLive(Request $request, DryGoodsLiveRepository $repository, SerializerInterface $serializer): JsonResponse {
+        // Get the JSON content from the request body
+        $data = json_decode($request->getContent(), true);
+
+        // Get the date from the JSON data
+        $date = $data['date'] ?? 'today';
+
+        // Create DateTime objects for the start and end of the provided date
+        $startOfDay = new \DateTime($date . ' 00:00:00');
+        $endOfDay = new \DateTime($date . ' 23:59:59');
+
+        $tasks = $repository->createQueryBuilder('t')
+            ->where('t.startTime >= :startOfDay')
+            ->andWhere('t.startTime <= :endOfDay')
+            ->setParameter('startOfDay', $startOfDay)
+            ->setParameter('endOfDay', $endOfDay)
+            ->addOrderBy('t.startTime', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $jsonContent = $serializer->serialize($tasks, 'json', ['groups' => ['dryGoodsLive', 'dryGoodsLive:employee']]);
+
+        $boxCount = $repository->createQueryBuilder('d')
+            ->select('SUM(d.boxCount)')
+            ->where('d.startTime >= :startOfDay')
+            ->andWhere('d.startTime <= :endOfDay')
+            ->setParameter('startOfDay', $startOfDay)
+            ->setParameter('endOfDay', $endOfDay)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $toteCount = $repository->createQueryBuilder('d')
+            ->select('SUM(d.toteCount)')
+            ->where('d.startTime >= :startOfDay')
+            ->andWhere('d.startTime <= :endOfDay')
+            ->setParameter('startOfDay', $startOfDay)
+            ->setParameter('endOfDay', $endOfDay)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $totalBoxesPerAisle = $repository->createQueryBuilder('d')
+            ->select('d.aisle, SUM(d.boxCount) as totalBoxes')
+            ->where('d.startTime >= :startOfDay')
+            ->andWhere('d.startTime <= :endOfDay')
+            ->setParameter('startOfDay', $startOfDay)
+            ->setParameter('endOfDay', $endOfDay)
+            ->groupBy('d.aisle')
+            ->addOrderBy('d.aisle', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $aisles = array_fill_keys(range(1, 7), 0);
+
+        // Merge the query results with the initialized array
+        foreach ($totalBoxesPerAisle as $result) {
+            $aisles[$result['aisle']] = $result['totalBoxes'];
+        }
+
+        // Convert the final array to an array of associative arrays if needed
+        $finalBoxesPerAisle = [];
+        foreach ($aisles as $aisle => $totalBoxes) {
+            $finalBoxesPerAisle[] = ['aisle' => $aisle, 'totalBoxes' => $totalBoxes];
+        }
+
+        $totalTotesPerAisle = $repository->createQueryBuilder('d')
+            ->select('d.aisle, SUM(d.toteCount) as totalTotes')
+            ->where('d.startTime >= :startOfDay')
+            ->andWhere('d.startTime <= :endOfDay')
+            ->setParameter('startOfDay', $startOfDay)
+            ->setParameter('endOfDay', $endOfDay)
+            ->groupBy('d.aisle')
+            ->addOrderBy('d.aisle', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $aislesTotes = array_fill_keys(range(1, 7), 0);
+
+        // Merge the query results with the initialized array
+        foreach ($totalTotesPerAisle as $result) {
+            $aislesTotes[$result['aisle']] = $result['totalTotes'];
+        }
+
+        // Convert the final array to an array of associative arrays if needed
+        $finalTotesPerAisle = [];
+        foreach ($aislesTotes as $aislesTotes => $totalTotes) {
+            $finalTotesPerAisle[] = ['aisle' => $aislesTotes, 'totalTotes' => $totalTotes];
+        }
+
+        // Create the response array
+        $response = [
+            'tasks' => json_decode($jsonContent),
+            'boxCount' => $boxCount,
+            'toteCount' => $toteCount,
+            'boxesPerAisle' => $finalBoxesPerAisle,
+            'totesPerAisle' => $finalTotesPerAisle
+        ];
+        return new JsonResponse($response, 200, [], false);
+    }
 }

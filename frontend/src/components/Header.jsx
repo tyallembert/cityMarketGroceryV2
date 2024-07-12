@@ -15,6 +15,9 @@ const Header = () => {
             case '/perishables/live':
                 setTitle("Perishables Live");
                 break;
+            case '/admin':
+                setTitle("Admin");
+                break;
             default:
                 setTitle("Error");
                 break;

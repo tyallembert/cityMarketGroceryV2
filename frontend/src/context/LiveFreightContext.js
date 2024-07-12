@@ -17,7 +17,7 @@ function LiveFreightProvider({ children }) {
     */
     const saveNewTask = async(newTask) => {
         // setTasks([...tasks, newTask]);
-        const data = await fetch("http://localhost:8000/dryGoodsLive/new", {
+        const data = await fetch(process.env.REACT_APP_API_URL + "/dryGoodsLive/new", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -38,7 +38,7 @@ function LiveFreightProvider({ children }) {
         Then it will populate the task object with the new task.
     */
     const finishTask = async(taskId) => {
-        const data = await fetch(`http://localhost:8000/dryGoodsLive/finish/${taskId}`, {
+        const data = await fetch(process.env.REACT_APP_API_URL + `/dryGoodsLive/finish/${taskId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ function LiveFreightProvider({ children }) {
         Then it will populate the task object with the new task.
     */
     const abandonTask = async(taskId) => {
-        const data = await fetch(`http://localhost:8000/dryGoodsLive/abandon/${taskId}`, {
+        const data = await fetch(process.env.REACT_APP_API_URL + `/dryGoodsLive/abandon/${taskId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ function LiveFreightProvider({ children }) {
         Then it will populate the task object with the new task.
     */
         const continueTask = async(abandonedTaskId, employeeId) => {
-            const data = await fetch(`http://localhost:8000/dryGoodsLive/continue/${abandonedTaskId}`, {
+            const data = await fetch(process.env.REACT_APP_API_URL + `/dryGoodsLive/continue/${abandonedTaskId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -121,7 +121,7 @@ function LiveFreightProvider({ children }) {
     }
     const fetchTasks = async() => {
         
-        const resData = await fetch('http://localhost:8000/dryGoodsLive/today',
+        const resData = await fetch(process.env.REACT_APP_API_URL + '/dryGoodsLive/today',
             {
                 'Content-Type': 'application/json'
             }
